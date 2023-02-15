@@ -3,19 +3,28 @@ const pool = require("../../config/db.js");
 module.exports = {
   create: (data, callback) => {
     console.log(data);
-    const sql = `insert into employee_db.emp_leave(emp_no,leave_no,from_date,to_date,no_of_days) values(?,?,?,?,?)`;
+    const sql = `insert into timesheetdb.emp_leave(
+      from_date,
+      to_date,
+      duration,
+      reason,
+      leave_no,
+      created_at,
+      emp_no
+      ) values(?,?,?,?,?,NOW(),?)`;
     pool.query(
       sql,
       [
-        data.emp_no,
-        data.leave_no,
         data.from_date,
         data.to_date,
-        data.no_of_days,
+        data.duration,
+        data.reason,
+        data.leave_no,
+        data.emp_no,
       ],
       (error, results, fields) => {
         if (error) {
-          console.log(error);
+          console.log("error", error);
           return callback(error);
         }
         return callback(null, results);
@@ -23,7 +32,7 @@ module.exports = {
     );
   },
   getEmpLeaves: (callback) => {
-    const sql = `select * from employee_db.emp_leave`;
+    const sql = `select * from timesheetdb.emp_leave`;
     pool.query(sql, [], (error, results, fields) => {
       if (error) {
         console.log(error);
@@ -34,7 +43,7 @@ module.exports = {
     });
   },
   getEmpLeaveByNo: (emp_no, callback) => {
-    const sql = `select * from employee_db.emp_leave where emp_no=?`;
+    const sql = `select * from timesheetdb.emp_leave where emp_no=?`;
     pool.query(sql, [emp_no], (error, results, fields) => {
       if (error) {
         console.log(error);
@@ -43,15 +52,23 @@ module.exports = {
       return callback(null, results[0]);
     });
   },
-  updateLeave: (data, callback) => {
-    const sql = `update employee_db.emp_leave set leave_no=?,from_date=?, to_date=?, no_of_days=?, where emp_no=?`;
+  updateEmpLeave: (data, callback) => {
+    const sql = `update timesheetdb.emp_leave set from_date=?, 
+    to_date=?,
+    duration=?,
+    reason=?,
+    leave_no=?,
+    emp_leave_id=?
+    where emp_no=?`;
     pool.query(
       sql,
       [
-        data.leave_no,
         data.from_date,
         data.to_date,
-        data.no_of_days,
+        data.duration,
+        data.reason,
+        data.leave_no,
+        data.emp_leave_id,
         data.emp_no,
       ],
       (error, results, fields) => {
