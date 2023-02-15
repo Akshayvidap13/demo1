@@ -66,6 +66,11 @@ module.exports = {
           success: 0,
           message: "Database connection error",
         });
+      } else if (results.affectedRows === 0) {
+        return res.status(404).json({
+          success: 0,
+          message: "Record not found",
+        });
       }
       return res.status(200).json({
         success: 1,
@@ -80,7 +85,7 @@ module.exports = {
       if (error) {
         return res.status(500).json({
           success: 0,
-          message: "no record found",
+          message: "No record found",
         });
       }
       console.log(results);

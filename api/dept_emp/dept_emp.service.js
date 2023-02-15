@@ -43,15 +43,17 @@ module.exports = {
   },
   updateDepartmentEmployee: (data, callback) => {
     const sql = `update timesheetdb.dept_emp set emp_no=?,dept_id=?, from_date=?, to_date=?,updated_at=NOW() 
-            where dept_emp_id=?
-`;
+            where dept_emp_id=?`;
     pool.query(
       sql,
-      [data.emp_no, data.dept_id, data.from_date, data.to_date, data.emp_id],
+      [
+        data.emp_no,
+        data.dept_id,
+        data.from_date,
+        data.to_date,
+        data.dept_emp_id,
+      ],
       (error, results, fields) => {
-        console.log("Service Data:", data);
-        console.log("Service sql:", sql);
-        console.log("Service results:", results);
         if (error) {
           return callback(error);
         }
