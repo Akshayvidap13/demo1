@@ -1,14 +1,15 @@
 const {
   create,
   getEmpLeaves,
-   getEmpLeaveByNo,
+  getEmpLeaveByNo,
   updateEmpLeave,
 } = require("./emp_leave.controller");
+const { checkToken } = require("../../auth/tokenvalidation");
 
 const router = require("express").Router();
-router.post("/", create);
- router.get("/", getEmpLeaves);
- router.get("/:no", getEmpLeaveByNo);
- router.patch("/", updateEmpLeave);
+router.post("/", checkToken, create);
+router.get("/", checkToken, getEmpLeaves);
+router.get("/:no", checkToken, getEmpLeaveByNo);
+router.patch("/", checkToken, updateEmpLeave);
 
 module.exports = router;

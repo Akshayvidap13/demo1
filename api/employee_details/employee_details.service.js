@@ -48,7 +48,7 @@ module.exports = {
         data.emergency_contact_no,
         data.blood_group,
         data.nationality,
-        data.role
+        data.role,
       ],
       (error, results, fields) => {
         if (error) {
@@ -130,7 +130,7 @@ module.exports = {
       (error, results, fields) => {
         // console.log("Error :", error);
         if (error) {
-                   return callback(error);
+          return callback(error);
         }
         // else if (results.affectedRows === 0) {
         //   return callback(error);
@@ -138,5 +138,16 @@ module.exports = {
         return callback(null, results);
       }
     );
+  },
+  login: (data, callback) => {
+    const sql = `select * from employee_details where email_id=?`;
+    pool.query(sql, [data.email], (error, results, fields) => {
+     
+      if (error) {
+        console.log(error);
+        return callback(error);
+      }
+      return callback(null, results);
+    });
   },
 };

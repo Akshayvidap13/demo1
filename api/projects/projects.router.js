@@ -4,11 +4,12 @@ const {
   getProjectsById,
   updateProjects,
 } = require("./projects.controller");
+const { checkToken } = require("../../auth/tokenvalidation");
 
 const router = require("express").Router();
-router.post("/", create);
-router.get("/", getProjects);
-router.get("/:id", getProjectsById);
-router.patch("/", updateProjects);
+router.post("/", checkToken, create);
+router.get("/", checkToken, getProjects);
+router.get("/:id", checkToken, getProjectsById);
+router.patch("/", checkToken, updateProjects);
 
 module.exports = router;
