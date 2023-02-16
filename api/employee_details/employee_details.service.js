@@ -8,6 +8,7 @@ module.exports = {
       last_name,
       personal_email_id,
       email_id,
+      password,
       mobile_no,
       dept_id,
       type_of_employment,
@@ -22,8 +23,9 @@ module.exports = {
       blood_group,
       nationality,
       created_at,
-      updated_at
-      ) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW(),NOW())`;
+      updated_at,
+      role
+      ) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW(),NOW(),?)`;
     pool.query(
       sql,
       [
@@ -32,6 +34,7 @@ module.exports = {
         data.last_name,
         data.personal_email_id,
         data.email_id,
+        data.password,
         data.mobile_no,
         data.dept_id,
         data.type_of_employment,
@@ -45,6 +48,7 @@ module.exports = {
         data.emergency_contact_no,
         data.blood_group,
         data.nationality,
+        data.role
       ],
       (error, results, fields) => {
         if (error) {
@@ -76,13 +80,14 @@ module.exports = {
     });
   },
   updateEmployee: (data, callback) => {
-    console.log("update data:-", data);
+    // console.log("update data:-", data);
     const sql = `update timesheetdb.employee_details set 
       first_name=?,
       middle_name=?,
       last_name=?,
       personal_email_id=?,
       email_id=?,
+      password=?,
       mobile_no=?,
       dept_id=?,
       type_of_employment=?,
@@ -96,7 +101,7 @@ module.exports = {
       emergency_contact_no=?,
       blood_group=?,
       nationality=?,
-      updated_at=NOW() where emp_no=?`;
+      updated_at=NOW(),role=? where emp_no=?`;
     pool.query(
       sql,
       [
@@ -105,6 +110,7 @@ module.exports = {
         data.last_name,
         data.personal_email_id,
         data.email_id,
+        data.password,
         data.mobile_no,
         data.dept_id,
         data.type_of_employment,
@@ -118,12 +124,13 @@ module.exports = {
         data.emergency_contact_no,
         data.blood_group,
         data.nationality,
+        data.role,
         data.emp_no,
       ],
       (error, results, fields) => {
+        // console.log("Error :", error);
         if (error) {
-          //console.Console("Error :", error);
-          return callback(error);
+                   return callback(error);
         }
         // else if (results.affectedRows === 0) {
         //   return callback(error);
