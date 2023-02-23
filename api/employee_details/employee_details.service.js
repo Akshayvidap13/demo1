@@ -71,8 +71,8 @@ module.exports = {
   getEmployeeById: (emp_no, callback) => {
     const sql = "select * from timesheetDB.employee_details where emp_no=?";
     pool.query(sql, [emp_no], (error, results, fields) => {
-      console.log("service error results:-", results);
-      console.log("result len type:-", results);
+      // console.log("service error results:-", results);
+      // console.log("result len type:-", results);
       if (error) {
         return callback(error);
       }
@@ -80,7 +80,7 @@ module.exports = {
     });
   },
   updateEmployee: (data, callback) => {
-    // console.log("update data:-", data);
+    // console.log("update data service:-", data);
     const sql = `update timesheetdb.employee_details set 
       first_name=?,
       middle_name=?,
@@ -131,20 +131,20 @@ module.exports = {
         // console.log("Error :", error);
         if (error) {
           return callback(error);
+        } else if (results.affectedRows === 0) {
+          return callback(error);
         }
-        // else if (results.affectedRows === 0) {
-        //   return callback(error);
-        // }
         return callback(null, results);
       }
     );
   },
   login: (data, callback) => {
+    console.log("Service Data:-", data);
     const sql = `select * from employee_details where email_id=?`;
     pool.query(sql, [data.email], (error, results, fields) => {
-     
+      console.log("SQL:-", sql);
       if (error) {
-        console.log(error);
+        // console.log(error);
         return callback(error);
       }
       return callback(null, results);

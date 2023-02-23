@@ -30,7 +30,7 @@ module.exports = {
   },
   getEmployee: (req, res) => {
     getEmployee((error, results) => {
-      console.log("Res:-", results);
+      // console.log("Res:-", results);
       if (error)
         return res.status(500).json({
           success: 0,
@@ -59,6 +59,8 @@ module.exports = {
   },
   updateEmployee: (req, res) => {
     const body = req.body;
+    const salt = genSaltSync(10);
+    body.password = hashSync(body.password, salt);
     updateEmployee(body, (error, results) => {
       if (error) {
         return res.status(500).json({
@@ -79,9 +81,11 @@ module.exports = {
   },
   login: (req, res) => {
     const body = req.body;
+    // console.log("Conto data:-", body);
     login(body, (error, results) => {
+      // console.log("Controller Re")
       if (error) {
-        console.log(err);
+        // console.log(err);
         return res.status(500).json({
           success: 0,
           message: "Connection not established",
@@ -93,7 +97,7 @@ module.exports = {
           message: "Email not found",
         });
       }
-      console.log("cont error:-", error);
+      // console.log("cont error:-", error);
       console.log("Con Results Password:-", results[0]);
       const result = compareSync(body.password, results[0].password);
       console.log("Compare result:-", result);
@@ -105,6 +109,7 @@ module.exports = {
         res.status(200).json({
           success: 1,
           message: "login Successful",
+          emp_no: results[0].emp_no,
           token: jsonToken,
         });
       } else {
