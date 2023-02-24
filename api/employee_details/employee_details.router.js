@@ -4,6 +4,8 @@ const {
   getEmployeeById,
   updateEmployee,
   login,
+  updateEmployeeEmp,
+  getEmployeeByIdEmp,
 } = require("./employee_details.controller");
 const { checkToken } = require("../../auth/tokenvalidation");
 
@@ -13,5 +15,7 @@ router.post("/", create);
 router.get("/", getEmployee);
 router.get("/:id", getEmployeeById);
 router.patch("/", updateEmployee);
+router.patch("/emp", updateEmployeeEmp);
+router.get("/emp/:id", getEmployeeByIdEmp);
 
 module.exports = router;

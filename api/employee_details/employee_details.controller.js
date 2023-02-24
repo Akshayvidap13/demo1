@@ -3,6 +3,8 @@ const {
   getEmployee,
   getEmployeeById,
   updateEmployee,
+  updateEmployeeEmp,
+  getEmployeeByIdEmp,
   login,
 } = require("./employee_details.service");
 const { genSalt, hashSync, compareSync } = require("bcryptjs");
@@ -57,11 +59,47 @@ module.exports = {
       });
     });
   },
+  getEmployeeByIdEmp: (req, res) => {
+    const id = req.params.id;
+    getEmployeeByIdEmp(id, (error, results) => {
+      if (error || results === undefined) {
+        return res.status(500).json({
+          success: 0,
+          message: "No record found",
+        });
+      }
+      return res.status(200).json({
+        success: 1,
+        data: results,
+      });
+    });
+  },
   updateEmployee: (req, res) => {
     const body = req.body;
     const salt = genSaltSync(10);
     body.password = hashSync(body.password, salt);
     updateEmployee(body, (error, results) => {
+      if (error) {
+        return res.status(500).json({
+          success: 0,
+          message: "Database connection error",
+        });
+      } else if (results.affectedRows === 0) {
+        return res.status(404).json({
+          success: 0,
+          message: "Record not found",
+        });
+      }
+      return res.status(200).json({
+        success: 1,
+        data: results,
+      });
+    });
+  },
+  updateEmployeeEmp: (req, res) => {
+    const body = req.body;
+    console.log("Controller Emp:-", body);
+    updateEmployeeEmp(body, (error, results) => {
       if (error) {
         return res.status(500).json({
           success: 0,

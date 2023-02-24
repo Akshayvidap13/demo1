@@ -24,8 +24,11 @@ module.exports = {
       nationality,
       created_at,
       updated_at,
-      role
-      ) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW(),NOW(),?)`;
+      role,
+      city,
+      country,
+      zipcode
+      ) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW(),NOW(),?,?,?,?)`;
     pool.query(
       sql,
       [
@@ -49,6 +52,9 @@ module.exports = {
         data.blood_group,
         data.nationality,
         data.role,
+        data.city,
+        data.country,
+        data.zipcode,
       ],
       (error, results, fields) => {
         if (error) {
@@ -79,8 +85,20 @@ module.exports = {
       return callback(null, results[0]);
     });
   },
+  getEmployeeByIdEmp: (emp_no, callback) => {
+    const sql = `select emp_no, first_name, last_name, email_id,mobile_no,personal_email_id,address,city,country,zipcode,aboutme
+       from timesheetDB.employee_details where emp_no =? `;
+    pool.query(sql, [emp_no], (error, results, fields) => {
+      // console.log("service error results:-", results);
+      // console.log("result len type:-", results);
+      if (error) {
+        return callback(error);
+      }
+      return callback(null, results[0]);
+    });
+  },
   updateEmployee: (data, callback) => {
-    // console.log("update data service:-", data);
+    console.log("update data service:-", data);
     const sql = `update timesheetdb.employee_details set 
       first_name=?,
       middle_name=?,
@@ -101,7 +119,11 @@ module.exports = {
       emergency_contact_no=?,
       blood_group=?,
       nationality=?,
-      updated_at=NOW(),role=? where emp_no=?`;
+      updated_at=NOW(),
+      role=?,
+      city=?,
+      country=?,
+      zipcode=? where emp_no=?`;
     pool.query(
       sql,
       [
@@ -125,11 +147,51 @@ module.exports = {
         data.blood_group,
         data.nationality,
         data.role,
+        data.city,
+        data.country,
+        data.zipcode,
         data.emp_no,
       ],
       (error, results, fields) => {
-        // console.log("Error :", error);
+        console.log("Error :", error);
         if (error) {
+          return callback(error);
+        } else if (results.affectedRows === 0) {
+          return callback(error);
+        }
+        return callback(null, results);
+      }
+    );
+  },
+  updateEmployeeEmp: (data, callback) => {
+    const sql = `update timesheetdb.employee_details set first_name=?,
+    last_name=?,
+    mobile_no=?,
+    email_id=?,
+    personal_email_id=?,
+    address=?,
+    city=?,
+    country=?,
+    zipcode=?,aboutme=? where emp_no=?`;
+    pool.query(
+      sql,
+      [
+        data.first_name,
+        data.last_name,
+        data.mobile_no,
+        data.email_id,
+        data.personal_email_id,
+        data.address,
+        data.city,
+        data.country,
+        data.zipcode,
+        data.aboutme,
+        data.emp_no,
+      ],
+      (error, results, fields) => {
+        console.log("Error :", error);
+        if (error) {
+          console.log("Service error:-", error);
           return callback(error);
         } else if (results.affectedRows === 0) {
           return callback(error);
