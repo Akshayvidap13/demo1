@@ -43,13 +43,34 @@ module.exports = {
     });
   },
   getEmpLeaveByNo: (emp_no, callback) => {
-    const sql = `select * from timesheetdb.emp_leave where emp_no=?`;
+    const sql = `select timesheetdb.emp_leave.emp_leave_id,timesheetdb.emp_leave.from_date,timesheetdb.emp_leave.to_date, 
+                  timesheetdb.emp_leave.duration,timesheetdb.emp_leave.reason, timesheetdb.emp_leave.emp_no,timesheetdb.emp_leave.status,
+                  timesheetdb.leaves.leave_name
+                  from timesheetdb.emp_leave JOIN timesheetdb.leaves 
+                  ON timesheetdb.emp_leave.leave_no=timesheetdb.leaves.leave_no
+                  where emp_no=?`;
     pool.query(sql, [emp_no], (error, results, fields) => {
       if (error) {
         console.log(error);
         return callback(error);
       }
-      return callback(null, results[0]);
+      return callback(null, results);
+    });
+  },
+  getEmpLeavesGroupBy: (emp_no, status, callback) => {
+    const sql = `select sum(timesheetdb.emp_leave.duration) as sum,timesheetdb.emp_leave.status, timesheetdb.leaves.leave_name 
+                  from timesheetdb.emp_leave JOIN timesheetdb.leaves 
+                  ON timesheetdb.emp_leave.leave_no=timesheetdb.leaves.leave_no 
+                  where timesheetdb.emp_leave.emp_no=? and timesheetdb.emp_leave.status=?
+                  group by timesheetdb.emp_leave.leave_no;`;
+    pool.query(sql, [emp_no, status], (error, results, fields) => {
+      console.log("Service Result:-", results);
+      console.log("Service Error:-", error);
+      if (error) {
+        console.log(error);
+        return callback(error);
+      }
+      return callback(null, results);
     });
   },
   updateEmpLeave: (data, callback) => {

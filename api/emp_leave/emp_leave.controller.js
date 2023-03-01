@@ -3,6 +3,7 @@ const {
   getEmpLeaves,
   getEmpLeaveByNo,
   updateEmpLeave,
+  getEmpLeavesGroupBy,
 } = require("./emp_leave.service");
 
 module.exports = {
@@ -39,11 +40,28 @@ module.exports = {
   getEmpLeaveByNo: (req, res) => {
     const no = req.params.no;
     getEmpLeaveByNo(no, (error, results) => {
-      if (error) {
-        // console.log(error);
+      if (error || results === undefined) {
         return res.status(500).json({
           success: 0,
-          message: "no record found",
+          message: "No record found",
+        });
+      }
+      return res.status(200).json({
+        success: 1,
+        data: results,
+      });
+    });
+  },
+  getEmpLeavesGroupBy: (req, res) => {
+    console.log("In controller:-");
+    const emp_no = req.params.emp_no;
+    const status = req.params.status;
+    console.log("Controller emp_no:-", emp_no, status);
+    getEmpLeavesGroupBy(emp_no, status, (error, results) => {
+      if (error || results === undefined) {
+        return res.status(500).json({
+          success: 0,
+          message: "No record found",
         });
       }
       return res.status(200).json({
@@ -54,11 +72,11 @@ module.exports = {
   },
   updateEmpLeave: (req, res) => {
     const body = req.body;
-    console.log("cbody",body)
+    console.log("cbody", body);
     updateEmpLeave(body, (error, results) => {
       console.log(error);
       if (error) {
-         console.log(error);
+        console.log(error);
         return res.status(500).json({
           success: 0,
           message: "Database connection error",
