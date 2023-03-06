@@ -3,7 +3,7 @@ const pool = require("../../config/db.js");
 module.exports = {
   create: (data, callback) => {
     console.log(data);
-    const sql = `insert into employee_db.leaves(leave_name) values(?)`;
+    const sql = `insert into timesheetDB.leaves(leave_name) values(?)`;
     pool.query(sql, [data.leave_name], (error, results, fields) => {
       if (error) {
         console.log(error);
@@ -13,7 +13,7 @@ module.exports = {
     });
   },
   getLeaves: (callback) => {
-    const sql = `select * from employee_db.leaves`;
+    const sql = `select * from timesheetDB.leaves`;
     pool.query(sql, [], (error, results, fields) => {
       if (error) {
         console.log(error);
@@ -24,7 +24,7 @@ module.exports = {
     });
   },
   getLeaveByNo: (leave_no, callback) => {
-    const sql = `select * from employee_db.leaves where leave_no=?`;
+    const sql = `select * from timesheetDB.leaves where leave_no=?`;
     pool.query(sql, [leave_no], (error, results, fields) => {
       if (error) {
         console.log(error);
@@ -34,7 +34,7 @@ module.exports = {
     });
   },
   updateLeave: (data, callback) => {
-    const sql = `update employee_db.leaves set leave_name=? where leave_no=?`;
+    const sql = `update timesheetDBp.leaves set leave_name=? where leave_no=?`;
     pool.query(
       sql,
       [data.leave_name, data.leave_no],

@@ -10,8 +10,9 @@ module.exports = {
       reason,
       leave_no,
       created_at,
-      emp_no
-      ) values(?,?,?,?,?,NOW(),?)`;
+      emp_no,
+      day,status
+      ) values(?,?,?,?,?,NOW(),?,?,?)`;
     pool.query(
       sql,
       [
@@ -21,6 +22,8 @@ module.exports = {
         data.reason,
         data.leave_no,
         data.emp_no,
+        data.day,
+        data.status,
       ],
       (error, results, fields) => {
         if (error) {
@@ -32,7 +35,7 @@ module.exports = {
     );
   },
   getEmpLeaves: (callback) => {
-    const sql = `select * from timesheetdb.emp_leave`;
+    const sql = `select * from timesheetdb.emp_leave ORDER BY emp_leave_id DESC `;
     pool.query(sql, [], (error, results, fields) => {
       if (error) {
         console.log(error);
@@ -45,10 +48,10 @@ module.exports = {
   getEmpLeaveByNo: (emp_no, callback) => {
     const sql = `select timesheetdb.emp_leave.emp_leave_id,timesheetdb.emp_leave.from_date,timesheetdb.emp_leave.to_date, 
                   timesheetdb.emp_leave.duration,timesheetdb.emp_leave.reason, timesheetdb.emp_leave.emp_no,timesheetdb.emp_leave.status,
-                  timesheetdb.leaves.leave_name
+                  timesheetdb.emp_leave.created_at,timesheetdb.leaves.leave_name
                   from timesheetdb.emp_leave JOIN timesheetdb.leaves 
                   ON timesheetdb.emp_leave.leave_no=timesheetdb.leaves.leave_no
-                  where emp_no=?`;
+                  where emp_no=? ORDER BY timesheetdb.emp_leave.emp_leave_id DESC`;
     pool.query(sql, [emp_no], (error, results, fields) => {
       if (error) {
         console.log(error);
@@ -74,13 +77,17 @@ module.exports = {
     });
   },
   updateEmpLeave: (data, callback) => {
-    const sql = `update timesheetdb.emp_leave set from_date=?, 
+    const sql = `update timesheetdb.emp_leave set 
+    from_date=?, 
     to_date=?,
     duration=?,
     reason=?,
     leave_no=?,
-    emp_leave_id=?
-    where emp_no=?`;
+    emp_no=?,
+    status=?,
+    day=?,
+    updated_at=NOW()
+    where  emp_leave_id=?`;
     pool.query(
       sql,
       [
@@ -89,14 +96,16 @@ module.exports = {
         data.duration,
         data.reason,
         data.leave_no,
-        data.emp_leave_id,
         data.emp_no,
+        data.status,
+        data.day,
+        data.emp_leave_id,
       ],
       (error, results, fields) => {
         if (error) {
           return callback(error);
         }
-        return callback(null, results[0]);
+        return callback(null, results);
       }
     );
   },
