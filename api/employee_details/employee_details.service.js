@@ -66,7 +66,7 @@ module.exports = {
     );
   },
   getEmployee: (callback) => {
-    const sql = `select * from timesheetDB.employee_details`;
+    const sql = `select * from employee_details`;
     pool.query(sql, [], (error, results, fields) => {
       if (error) {
         return callback(error);
