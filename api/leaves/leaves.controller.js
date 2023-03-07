@@ -39,11 +39,10 @@ module.exports = {
   getLeaveByNo: (req, res) => {
     const no = req.params.no;
     getLeaveByNo(no, (error, results) => {
-      if (error) {
-        // console.log(error);
+      if (error || results === undefined) {
         return res.status(500).json({
           success: 0,
-          message: "no record found",
+          message: "No record found",
         });
       }
       return res.status(200).json({
@@ -56,10 +55,14 @@ module.exports = {
     const body = req.body;
     updateLeave(body, (error, results) => {
       if (error) {
-        // console.log(error);
         return res.status(500).json({
           success: 0,
           message: "Database connection error",
+        });
+      } else if (results.affectedRows === 0) {
+        return res.status(404).json({
+          success: 0,
+          message: "Record not found",
         });
       }
       return res.status(200).json({

@@ -15,6 +15,7 @@ const titlesRouter = require("./api/titles/titles.router");
 const projectsRouter = require("./api/projects/projects.router");
 const holidaysRouter = require("./api/holidays/holidays.router");
 const weekly_timesheetRouter = require("./api/weekly_timesheet/weekly_timesheet.router");
+const timesheet = require("./api/timesheet/timesheet.router");
 
 var app = express();
 
@@ -32,6 +33,7 @@ app.use(
   })
 );
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/api/employee_details", employeeRouter);
 app.use("/api/leaves", leavesRouter);
 app.use("/api/departments", departmentsRouter);
@@ -43,6 +45,7 @@ app.use("/api/titles", titlesRouter);
 app.use("/api/projects", projectsRouter);
 app.use("/api/holidays", holidaysRouter);
 app.use("/api/weekly_timesheet", weekly_timesheetRouter);
+app.use("/api/timesheet", timesheet);
 app.listen(process.env.APP_PORT, () => {
   console.log(`server running on port ${process.env.APP_PORT}`);
 });

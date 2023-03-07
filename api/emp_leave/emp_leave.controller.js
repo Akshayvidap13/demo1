@@ -26,6 +26,7 @@ module.exports = {
   },
   getEmpLeaves: (req, res) => {
     getEmpLeaves((error, results) => {
+      
       if (error)
         return res.status(500).json({
           success: 0,
@@ -74,12 +75,15 @@ module.exports = {
     const body = req.body;
     console.log("cbody", body);
     updateEmpLeave(body, (error, results) => {
-      console.log(error);
       if (error) {
-        console.log(error);
         return res.status(500).json({
           success: 0,
           message: "Database connection error",
+        });
+      } else if (results.affectedRows === 0) {
+        return res.status(404).json({
+          success: 0,
+          message: "Record not found",
         });
       }
       return res.status(200).json({

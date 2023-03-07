@@ -11,6 +11,33 @@ const { genSalt, hashSync, compareSync } = require("bcryptjs");
 const { genSaltSync } = require("bcrypt");
 require("dotenv").config();
 const { sign } = require("jsonwebtoken");
+const multer = require("multer");
+const mkdirp = require("mkdirp");
+const moment = require("moment");
+
+// img storage confing
+const imgconfig = multer.diskStorage({
+  destination: (req, file, callback) => {
+    // Create the destination folder if it doesn't exist
+    mkdirp("../uploads", (err) => callback(err, "../uploads"));
+  },
+  filename: (req, file, callback) => {
+    callback(null, `image-${Date.now()}.${file.originalname}`);
+  },
+});
+// img filter
+const isImage = (req, file, callback) => {
+  if (file.mimetype.startsWith("image")) {
+    callback(null, true);
+  } else {
+    callback(null, Error("Only images are allowed"));
+  }
+};
+
+const upload = multer({
+  storage: imgconfig,
+  fileFilter: isImage,
+}).single("profilepic");
 
 module.exports = {
   create: (req, res) => {
@@ -32,7 +59,8 @@ module.exports = {
   },
   getEmployee: (req, res) => {
     getEmployee((error, results) => {
-      // console.log("Res:-", results);
+      console.log("Res:-", results);
+      console.log("Contorller error:-", error);
       if (error)
         return res.status(500).json({
           success: 0,
@@ -74,49 +102,59 @@ module.exports = {
       });
     });
   },
-  updateEmployee: (req, res) => {
-    const body = req.body;
-    const salt = genSaltSync(10);
-    body.password = hashSync(body.password, salt);
-    updateEmployee(body, (error, results) => {
-      if (error) {
-        return res.status(500).json({
-          success: 0,
-          message: "Database connection error",
+  updateEmployee:
+    (upload,
+    (req, res) => {
+      const body = req.body;
+      const salt = genSaltSync(10);
+      body.password = hashSync(body.password, salt);
+      console.log("Controler Body:-", body);
+      console.log("Res file:-", res.file);
+      updateEmployee(body, (error, results) => {
+        if (error) {
+          return res.status(500).json({
+            success: 0,
+            message: "Database connection error",
+          });
+        } else if (results.affectedRows === 0) {
+          return res.status(404).json({
+            success: 0,
+            message: "Record not found",
+          });
+        }
+        return res.status(200).json({
+          success: 1,
+          data: results,
         });
-      } else if (results.affectedRows === 0) {
-        return res.status(404).json({
-          success: 0,
-          message: "Record not found",
-        });
-      }
-      return res.status(200).json({
-        success: 1,
-        data: results,
       });
-    });
-  },
-  updateEmployeeEmp: (req, res) => {
-    const body = req.body;
-    console.log("Controller Emp:-", body);
-    updateEmployeeEmp(body, (error, results) => {
-      if (error) {
-        return res.status(500).json({
-          success: 0,
-          message: "Database connection error",
+    }),
+  updateEmployeeEmp:
+    (upload,
+    (req, res) => {
+      const { empData } = req.body;
+      console.log("In controller");
+      console.log("Controller EmpData:-", empData);
+      // console.log("Controler Body REQ:-", JSON.parse(empData));
+      console.log("Res file:-", req.files);
+      updateEmployeeEmp(body, (error, results) => {
+        if (error) {
+          return res.status(500).json({
+            success: 0,
+            message: "Database connection error",
+          });
+        }
+        // else if (results.affectedRows === 0) {
+        //   return res.status(404).json({
+        //     success: 0,
+        //     message: "Record not found",
+        //   });
+        // }
+        return res.status(200).json({
+          success: 1,
+          data: results,
         });
-      } else if (results.affectedRows === 0) {
-        return res.status(404).json({
-          success: 0,
-          message: "Record not found",
-        });
-      }
-      return res.status(200).json({
-        success: 1,
-        data: results,
       });
-    });
-  },
+    }),
   login: (req, res) => {
     const body = req.body;
     // console.log("Conto data:-", body);
