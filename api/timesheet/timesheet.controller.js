@@ -25,7 +25,7 @@ module.exports = {
   },
   getTimesheet: (req, res) => {
     getTimesheet((error, results) => {
-      if (error)
+      if (error || results === undefined)
         return res.status(500).json({
           success: 0,
           message: "No records found",
@@ -40,10 +40,10 @@ module.exports = {
     const id = req.params.id;
     // console.log("params", id);
     getTimesheetById(id, (error, results) => {
-      if (error) {
+      if (error || results === undefined) {
         return res.status(500).json({
           success: 0,
-          message: "no record found",
+          message: "No record found",
         });
       }
       return res.status(200).json({
@@ -54,10 +54,10 @@ module.exports = {
   },
   updateTimesheet: (req, res) => {
     const body = req.body;
-     console.log("data", body);
+    console.log("data", body);
     updateTimesheet(body, (error, results) => {
       console.log(body);
-      if (error) {
+      if (error || results === undefined) {
         return res.status(500).json({
           success: 0,
           message: "Database connection error",
