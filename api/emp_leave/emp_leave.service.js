@@ -32,7 +32,11 @@ module.exports = {
     );
   },
   getEmpLeaves: (callback) => {
-    const sql = `select * from timesheetdb.emp_leave`;
+    const sql = `select timesheetdb.emp_leave.emp_leave_id,timesheetdb.emp_leave.from_date,timesheetdb.emp_leave.to_date, 
+                  timesheetdb.emp_leave.duration,timesheetdb.emp_leave.reason, timesheetdb.emp_leave.emp_no,timesheetdb.emp_leave.status,
+                  timesheetdb.leaves.leave_name
+                  from timesheetdb.emp_leave JOIN timesheetdb.leaves 
+                  ON timesheetdb.emp_leave.leave_no=timesheetdb.leaves.leave_no`;
     pool.query(sql, [], (error, results, fields) => {
       if (error) {
         console.log(error);
