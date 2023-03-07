@@ -38,10 +38,9 @@ module.exports = {
                 JOIN  departments ON projects.dept_id=departments.dept_id `;
     pool.query(sql, [], (error, results, fields) => {
       if (error) {
-        console.log(error);
         return callback(error);
       }
-      console.log("result", results);
+
       return callback(null, results);
     });
   },
@@ -50,14 +49,12 @@ module.exports = {
                 JOIN  departments ON projects.dept_id=departments.dept_id where project_id=?`;
     pool.query(sql, [project_id], (error, results, fields) => {
       if (error) {
-        console.log(error);
         return callback(error);
       }
       return callback(null, results[0]);
     });
   },
   updateProjects: (data, callback) => {
-    console.log("servcie data:-", data);
     const sql = `update timesheetdb.projects set 
     project_name=?,
     client_name=?,

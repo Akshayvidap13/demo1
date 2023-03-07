@@ -11,7 +11,7 @@ module.exports = {
     // console.log(body);
     create(body, (error, results) => {
       if (error) {
-        console.log(error);
+        // console.log(error);
         return res.status(500).json({
           success: 0,
           message: "Database connection Error",
@@ -56,7 +56,7 @@ module.exports = {
     const body = req.body;
     // console.log("data", body);
     updateProjects(body, (error, results) => {
-      console.log(results);
+      //console.log(results);
       if (error) {
         return res.status(500).json({
           success: 0,

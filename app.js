@@ -14,6 +14,7 @@ const weekly_dataRouter = require("./api/weekly_data/weekly_data.router");
 const titlesRouter = require("./api/titles/titles.router");
 const projectsRouter = require("./api/projects/projects.router");
 const holidaysRouter = require("./api/holidays/holidays.router");
+const timesheet = require("./api/timesheet/timesheet.router");
 
 var app = express();
 
@@ -42,6 +43,7 @@ app.use("/api/weekly_data", weekly_dataRouter);
 app.use("/api/titles", titlesRouter);
 app.use("/api/projects", projectsRouter);
 app.use("/api/holidays", holidaysRouter);
+app.use("/api/timesheet", timesheet);
 app.listen(process.env.APP_PORT, () => {
   console.log(`server running on port ${process.env.APP_PORT}`);
 });
