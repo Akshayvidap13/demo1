@@ -65,9 +65,10 @@ module.exports = {
     //               on  timesheetdb.weekly_timesheet.project_id=timesheetdb.projects.project_id where emp_no=?`;
     console.log("Service data:-", data);
     const sql = `SELECT weekly_timesheet.*, projects.project_name
-                FROM timesheetdb.weekly_timesheet
-                JOIN timesheetdb.projects ON weekly_timesheet.project_id = projects.project_id
-                WHERE emp_no = ? AND weekly_timesheet.date BETWEEN ? AND ?`;
+                  FROM timesheetdb.weekly_timesheet
+                  JOIN timesheetdb.projects ON weekly_timesheet.project_id = projects.project_id
+                  WHERE emp_no = 109 AND weekly_timesheet.date BETWEEN '2023-03-06' AND '2023-03-12' AND
+                  weekly_timesheet.status IS NULL;`;
 
     pool.query(
       sql,
@@ -96,6 +97,23 @@ module.exports = {
       }
       return callback(null, results);
     });
+  },
+  updateStatus: (data, callback) => {
+    const sql = `update weekly_timesheet set weekly_timesheet.status=?,weekly_timesheet.updated_at=NOW()  where emp_no=? AND
+	                      weekly_timesheet.date BETWEEN ? AND ?;`;
+    pool.query(
+      sql,
+      [data.status, data.emp_no, data.from_date, data.to_date],
+      (error, results, fields) => {
+        console.log("Sql:-", sql);
+        console.log("service error:-", error);
+        console.log("results:-", results);
+        if (error) {
+          return callback(error);
+        }
+        return callback(null, results);
+      }
+    );
   },
 
   updateTimesheet: (data, callback) => {
