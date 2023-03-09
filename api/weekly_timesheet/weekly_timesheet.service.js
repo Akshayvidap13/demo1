@@ -2,12 +2,12 @@ const pool = require("../../config/db");
 
 module.exports = {
   create: (data, callback) => {
-    console.log("S Data", data);
+    console.log("Service  Data", data);
     const sql = `insert into timesheetdb.weekly_timesheet(
         emp_no,
         totalhours,
         hours,
-        project,
+        project_id,
         status,
         approved_by,
         reason,
@@ -23,7 +23,7 @@ module.exports = {
         data.emp_no,
         data.totalhours,
         data.hours,
-        data.project,
+        data.project_id,
         data.status,
         data.approved_by,
         data.reason,
@@ -42,7 +42,10 @@ module.exports = {
     );
   },
   getTimesheet: (callback) => {
-    const sql = `select * from timesheetdb.weekly_timesheet`;
+    const sql = `select timesheetdb.weekly_timesheet.*,
+                timesheetdb.projects.project_name   
+                from timesheetdb.weekly_timesheet join timesheetdb.projects
+                on  timesheetdb.weekly_timesheet.project_id=timesheetdb.projects.project_id`;
     pool.query(sql, [], (error, results, fields) => {
       console.log("sdata=>", results);
       if (error) {
@@ -53,21 +56,53 @@ module.exports = {
       return callback(null, results);
     });
   },
-  getTimesheetById: (emp_no, callback) => {
-    const sql = `select * from timesheetdb.weekly_timesheet where emp_no=?`;
-    pool.query(sql, [emp_no], (error, results, fields) => {
+  getTimesheetById: (data, callback) => {
+    data.from_date = data.from_date.trim();
+    data.to_date = data.to_date.trim();
+    // const sql = `select timesheetdb.weekly_timesheet.*,
+    //               timesheetdb.projects.project_name
+    //               from timesheetdb.weekly_timesheet join timesheetdb.projects
+    //               on  timesheetdb.weekly_timesheet.project_id=timesheetdb.projects.project_id where emp_no=?`;
+    console.log("Service data:-", data);
+    const sql = `SELECT weekly_timesheet.*, projects.project_name
+                FROM timesheetdb.weekly_timesheet
+                JOIN timesheetdb.projects ON weekly_timesheet.project_id = projects.project_id
+                WHERE emp_no = ? AND weekly_timesheet.date BETWEEN ? AND ?`;
+
+    pool.query(
+      sql,
+      [data.emp_no, data.from_date, data.to_date],
+
+      (error, results, fields) => {
+        console.log(" Service Sql:-", sql);
+        if (error) {
+          console.log(error);
+          return callback(error);
+        }
+        return callback(null, results);
+      }
+    );
+  },
+
+  getTimesheetByWId: (weekly_id, callback) => {
+    const sql = `select timesheetdb.weekly_timesheet.*,
+                  timesheetdb.projects.project_name   
+                  from timesheetdb.weekly_timesheet join timesheetdb.projects
+                  on  timesheetdb.weekly_timesheet.project_id=timesheetdb.projects.project_id where weekly_timesheet_id=?`;
+    pool.query(sql, [weekly_id], (error, results, fields) => {
       if (error) {
         console.log(error);
         return callback(error);
       }
-      return callback(null, results[0]);
+      return callback(null, results);
     });
   },
+
   updateTimesheet: (data, callback) => {
     const sql = `update timesheetdb.weekly_timesheet set 
         totalhours=?,
         hours=?,
-        project=?,
+        project_id=?,
         status=?,
         approved_by=?,
         reason=?,
@@ -76,13 +111,13 @@ module.exports = {
         day=?,
         date=?,
         updated_at=NOW()
-    where emp_no=?`;
+    where weekly_timesheet_id=?`;
     pool.query(
       sql,
       [
         data.totalhours,
         data.hours,
-        data.project,
+        data.project_id,
         data.status,
         data.approved_by,
         data.reason,
@@ -90,14 +125,16 @@ module.exports = {
         data.overtime,
         data.day,
         data.date,
-        data.emp_no,
+        data.weekly_timesheet_id,
       ],
       (error, results, fields) => {
-        console.log(error, results);
+        console.log("Sql:-", sql);
+        console.log("service error:-", error);
+        console.log("results:-", results);
         if (error) {
           return callback(error);
         }
-        return callback(null, results[0]);
+        return callback(null, results);
       }
     );
   },

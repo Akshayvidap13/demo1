@@ -3,12 +3,13 @@ const {
   getTimesheet,
   getTimesheetById,
   updateTimesheet,
+  getTimesheetByWId,
 } = require("./weekly_timesheet.service");
 
 module.exports = {
   create: (req, res) => {
     const body = req.body;
-    // console.log(body);
+    console.log(body);
     create(body, (error, results) => {
       if (error) {
         console.log(error);
@@ -38,9 +39,10 @@ module.exports = {
     });
   },
   getTimesheetById: (req, res) => {
-    const id = req.params.id;
-    // console.log("params", id);
-    getTimesheetById(id, (error, results) => {
+    const data = req.params;
+    console.log("Params:-", req.params);
+
+    getTimesheetById(data, (error, results) => {
       if (error) {
         return res.status(500).json({
           success: 0,
@@ -53,15 +55,39 @@ module.exports = {
       });
     });
   },
+
+  getTimesheetByWId: (req, res) => {
+    const id = req.params.id;
+    // console.log("params", id);
+    getTimesheetByWId(id, (error, results) => {
+      if (error) {
+        return res.status(500).json({
+          success: 0,
+          message: "no record found",
+        });
+      }
+      return res.status(200).json({
+        success: 1,
+        data: results,
+      });
+    });
+  },
+
   updateTimesheet: (req, res) => {
     const body = req.body;
     console.log("data", body);
     updateTimesheet(body, (error, results) => {
-      console.log(body);
+      console.log("contoller body:-", body);
+      console.log("contoller result:-", results);
       if (error) {
         return res.status(500).json({
           success: 0,
           message: "Database connection error",
+        });
+      } else if (results.affectedRows === 0) {
+        return res.status(404).json({
+          success: 0,
+          message: "Record not found",
         });
       }
       return res.status(200).json({

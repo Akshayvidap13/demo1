@@ -142,13 +142,12 @@ module.exports = {
             success: 0,
             message: "Database connection error",
           });
+        } else if (results.affectedRows === 0) {
+          return res.status(404).json({
+            success: 0,
+            message: "Record not found",
+          });
         }
-        // else if (results.affectedRows === 0) {
-        //   return res.status(404).json({
-        //     success: 0,
-        //     message: "Record not found",
-        //   });
-        // }
         return res.status(200).json({
           success: 1,
           data: results,
@@ -157,7 +156,7 @@ module.exports = {
     }),
   login: (req, res) => {
     const body = req.body;
-    // console.log("Conto data:-", body);
+    console.log("Conto data:-", body);
     login(body, (error, results) => {
       // console.log("Controller Re")
       if (error) {
@@ -173,7 +172,7 @@ module.exports = {
           message: "Email not found",
         });
       }
-      // console.log("cont error:-", error);
+      console.log("cont Result:-", results);
       console.log("Con Results Password:-", results[0]);
       const result = compareSync(body.password, results[0].password);
       console.log("Compare result:-", result);
