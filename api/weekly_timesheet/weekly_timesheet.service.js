@@ -67,7 +67,7 @@ module.exports = {
     const sql = `SELECT weekly_timesheet.*, projects.project_name
                   FROM timesheetdb.weekly_timesheet
                   JOIN timesheetdb.projects ON weekly_timesheet.project_id = projects.project_id
-                  WHERE emp_no = 109 AND weekly_timesheet.date BETWEEN '2023-03-06' AND '2023-03-12' AND
+                  WHERE emp_no = 109 AND weekly_timesheet.date BETWEEN ? AND ? AND
                   weekly_timesheet.status IS NULL;`;
 
     pool.query(
