@@ -63,11 +63,10 @@ module.exports = {
     //               timesheetdb.projects.project_name
     //               from timesheetdb.weekly_timesheet join timesheetdb.projects
     //               on  timesheetdb.weekly_timesheet.project_id=timesheetdb.projects.project_id where emp_no=?`;
-    console.log("Service data:-", data);
     const sql = `SELECT weekly_timesheet.*, projects.project_name
                   FROM timesheetdb.weekly_timesheet
                   JOIN timesheetdb.projects ON weekly_timesheet.project_id = projects.project_id
-                  WHERE emp_no = 109 AND weekly_timesheet.date BETWEEN ? AND ? AND
+                  WHERE emp_no =? AND weekly_timesheet.date BETWEEN ? AND ? AND
                   weekly_timesheet.status IS NULL;`;
 
     pool.query(
@@ -75,7 +74,9 @@ module.exports = {
       [data.emp_no, data.from_date, data.to_date],
 
       (error, results, fields) => {
-        console.log(" Service Sql:-", sql);
+        console.log("Service SQL:-", sql);
+        console.log(" Service error:-", error);
+        console.log("Service Result:-", results);
         if (error) {
           console.log(error);
           return callback(error);
