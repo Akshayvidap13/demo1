@@ -100,11 +100,12 @@ module.exports = {
     });
   },
   updateStatus: (data, callback) => {
-    const sql = `update weekly_timesheet set weekly_timesheet.status=?,weekly_timesheet.updated_at=NOW()  where emp_no=? AND
-	                      weekly_timesheet.date BETWEEN ? AND ?;`;
+    // const sql = `update weekly_timesheet set weekly_timesheet.status=?,weekly_timesheet.updated_at=NOW()  where emp_no=? AND
+    //                     weekly_timesheet.date BETWEEN ? AND ?`;
+    const sql = `call update_Status_SUM(?,?,?,?)`;
     pool.query(
       sql,
-      [data.status, data.emp_no, data.from_date, data.to_date],
+      [data.emp_no, data.from_date, data.to_date, data.status],
       (error, results, fields) => {
         console.log("Sql:-", sql);
         console.log("service error:-", error);

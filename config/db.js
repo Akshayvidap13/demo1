@@ -8,6 +8,8 @@ const connect = mysql.createConnection({
   database: process.env.DB_DATABASE,
   connectionLimit: process.env.DB_CONNECTION_LIMIT,
   host: process.env.DB_HOST,
+  queueLimit: 0,
+  connectTimeout: 100000, // increase the timeout to 60 seconds
   //ssl: require,
   //port: process.env.APP_PORT,
 });
