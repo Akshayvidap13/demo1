@@ -52,5 +52,5 @@ jobs:
         with:
           app-name: 'web-timesheet-backend'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_1A98C674705F499A8BEE1A35ACB24B71 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_41978F964A604174A23E82639E2211A0 }}
           package: .
