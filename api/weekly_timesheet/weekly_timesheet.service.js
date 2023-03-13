@@ -59,6 +59,7 @@ module.exports = {
   getTimesheetById: (data, callback) => {
     data.from_date = data.from_date.trim();
     data.to_date = data.to_date.trim();
+    console.log("controller data:-", data);
     // const sql = `select timesheetdb.weekly_timesheet.*,
     //               timesheetdb.projects.project_name
     //               from timesheetdb.weekly_timesheet join timesheetdb.projects
