@@ -205,7 +205,7 @@ module.exports = {
     const sql = `select * from employee_details where email_id=?`;
     pool.query(sql, [data.email], (error, results, fields) => {
       console.log("SQL:-", sql);
-      console.log("server result", results);
+      console.log("server result:-", results);
       if (error) {
         // console.log(error);
         return callback(error);

@@ -5,6 +5,7 @@ const {
   updateTimesheet,
   getTimesheetByWId,
   updateStatus,
+  getTimesheetEmployeeByID,
 } = require("./weekly_timesheet.service");
 
 module.exports = {
@@ -44,6 +45,23 @@ module.exports = {
     console.log("Params:-", req.params);
 
     getTimesheetById(data, (error, results) => {
+      if (error) {
+        return res.status(500).json({
+          success: 0,
+          message: "no record found",
+        });
+      }
+      return res.status(200).json({
+        success: 1,
+        data: results,
+      });
+    });
+  },
+  getTimesheetEmployeeByID: (req, res) => {
+    const data = req.params;
+    console.log("Params:-", req.params);
+
+    getTimesheetEmployeeByID(data, (error, results) => {
       if (error) {
         return res.status(500).json({
           success: 0,
