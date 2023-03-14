@@ -86,6 +86,32 @@ module.exports = {
       }
     );
   },
+  getTimesheetByIdAllData: (data, callback) => {
+    data.from_date = data.from_date.trim();
+    data.to_date = data.to_date.trim();
+    console.log("controller data:-", data);
+
+    const sql = `SELECT weekly_timesheet.*, projects.project_name
+                  FROM timesheetdb.weekly_timesheet
+                  JOIN timesheetdb.projects ON weekly_timesheet.project_id = projects.project_id
+                  WHERE emp_no =? AND weekly_timesheet.date BETWEEN ? AND ?;`;
+
+    pool.query(
+      sql,
+      [data.emp_no, data.from_date, data.to_date],
+
+      (error, results, fields) => {
+        console.log("Service SQL:-", sql);
+        console.log(" Service error:-", error);
+        console.log("Service Result:-", results);
+        if (error) {
+          console.log(error);
+          return callback(error);
+        }
+        return callback(null, results);
+      }
+    );
+  },
   getTimesheetEmployeeByID: (data, callback) => {
     console.log("controller data:-", data);
     const sql = `SELECT weekly_timesheet.*, projects.project_name
