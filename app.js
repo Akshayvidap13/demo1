@@ -35,8 +35,8 @@ app.use(
     origin: "*",
   })
 );
-app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 app.use("/api/employee_details", employeeRouter);
 app.use("/api/leaves", leavesRouter);
 app.use("/api/departments", departmentsRouter);

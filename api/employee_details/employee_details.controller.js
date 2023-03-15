@@ -34,10 +34,11 @@ const isImage = (req, file, callback) => {
   }
 };
 
-const upload = multer({
-  storage: imgconfig,
-  fileFilter: isImage,
-}).single("profilepic");
+// const upload = multer({
+//   storage: imgconfig,
+//   fileFilter: isImage,
+// }).single("profilepic");
+const upload = multer({ dest: "uploads/" }).single("profilepic");
 
 module.exports = {
   create: (req, res) => {
@@ -128,32 +129,30 @@ module.exports = {
         });
       });
     }),
-  updateEmployeeEmp:
-    (upload,
-    (req, res) => {
-      const { empData } = req.body;
-      console.log("In controller");
-      console.log("Controller EmpData:-", empData);
-      // console.log("Controler Body REQ:-", JSON.parse(empData));
-      console.log("Res file:-", req.files);
-      updateEmployeeEmp(body, (error, results) => {
-        if (error) {
-          return res.status(500).json({
-            success: 0,
-            message: "Database connection error",
-          });
-        } else if (results.affectedRows === 0) {
-          return res.status(404).json({
-            success: 0,
-            message: "Record not found",
-          });
-        }
-        return res.status(200).json({
-          success: 1,
-          data: results,
+  updateEmployeeEmp: (req, res) => {
+    console.log("Request body:", req.body);
+    const { first_name } = JSON.parse(req.body.empData);
+    const profilepic = req.file.filename;
+    console.log("In controller first_name:-", first_name);
+
+    updateEmployeeEmp(first_name, (error, results) => {
+      if (error) {
+        return res.status(500).json({
+          success: 0,
+          message: "Database connection error",
         });
+      } else if (results.affectedRows === 0) {
+        return res.status(404).json({
+          success: 0,
+          message: "Record not found",
+        });
+      }
+      return res.status(200).json({
+        success: 1,
+        data: results,
       });
-    }),
+    });
+  },
   login: (req, res) => {
     const body = req.body;
     console.log("Conto data:-", body);

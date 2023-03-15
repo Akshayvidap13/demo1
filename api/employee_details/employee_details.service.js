@@ -164,7 +164,8 @@ module.exports = {
     );
   },
   updateEmployeeEmp: (data, callback) => {
-    const sql = `update timesheetdb.employee_details set first_name=?,
+    const sql = `update timesheetdb.employee_details set 
+    first_name=?,
     last_name=?,
     mobile_no=?,
     email_id=?,
@@ -172,7 +173,10 @@ module.exports = {
     address=?,
     city=?,
     country=?,
-    zipcode=?,aboutme=? where emp_no=?`;
+    zipcode=?,
+    aboutme=?,
+    profile_pic=?
+     where emp_no=?`;
     pool.query(
       sql,
       [
@@ -186,6 +190,7 @@ module.exports = {
         data.country,
         data.zipcode,
         data.aboutme,
+        data.profilepic,
         data.emp_no,
       ],
       (error, results, fields) => {
