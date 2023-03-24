@@ -11,8 +11,10 @@ module.exports = {
       leave_no,
       created_at,
       emp_no,
-      day,status
-      ) values(?,?,?,?,?,NOW(),?,?,?)`;
+      day,
+      status,
+      hours
+      ) values(?,?,?,?,?,NOW(),?,?,?,?)`;
     pool.query(
       sql,
       [
@@ -24,6 +26,7 @@ module.exports = {
         data.emp_no,
         data.day,
         data.status,
+        data.hours,
       ],
       (error, results, fields) => {
         if (error) {
@@ -44,6 +47,22 @@ module.exports = {
       console.log("result", results);
       return callback(null, results);
     });
+  },
+  getEmpLeavesByDate: (data, callback) => {
+    const sql = `SELECT * FROM timesheetdb.emp_leave where 
+                emp_no=? AND from_date BETWEEN ? AND ?; `;
+    pool.query(
+      sql,
+      [data.emp_no, data.from_date, data.to_date],
+      (error, results, fields) => {
+        if (error) {
+          console.log(error);
+          return callback(error);
+        }
+        console.log("result", results);
+        return callback(null, results);
+      }
+    );
   },
   getEmpLeaveByNo: (emp_no, callback) => {
     const sql = `select timesheetdb.emp_leave.emp_leave_id,timesheetdb.emp_leave.from_date,timesheetdb.emp_leave.to_date, 

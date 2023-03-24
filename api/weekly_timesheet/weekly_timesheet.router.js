@@ -5,6 +5,7 @@ const {
   updateTimesheet,
   getTimesheetByWId,
   updateStatus,
+  updateStatusOnly,
   getTimesheetEmployeeByID,
   getTimesheetByIdAllData,
 } = require("./weekly_timesheet.controller");
@@ -19,5 +20,6 @@ router.get("/onlyempid/:emp_no", getTimesheetEmployeeByID);
 router.get("/id/:id", getTimesheetByWId);
 router.patch("/", updateTimesheet);
 router.patch("/status", updateStatus);
+router.patch("/statusonly", updateStatusOnly);
 
 module.exports = router;

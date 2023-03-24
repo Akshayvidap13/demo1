@@ -64,11 +64,14 @@ module.exports = {
     //               timesheetdb.projects.project_name
     //               from timesheetdb.weekly_timesheet join timesheetdb.projects
     //               on  timesheetdb.weekly_timesheet.project_id=timesheetdb.projects.project_id where emp_no=?`;
-    const sql = `SELECT weekly_timesheet.*, projects.project_name
-                  FROM timesheetdb.weekly_timesheet
-                  JOIN timesheetdb.projects ON weekly_timesheet.project_id = projects.project_id
-                  WHERE emp_no =? AND weekly_timesheet.date BETWEEN ? AND ? AND
-                  weekly_timesheet.status IS NULL;`;
+    // const sql = `SELECT weekly_timesheet.*, projects.project_name
+    //               FROM timesheetdb.weekly_timesheet
+    //               JOIN timesheetdb.projects ON weekly_timesheet.project_id = projects.project_id
+    //               WHERE emp_no =? AND weekly_timesheet.date BETWEEN ? AND ? AND
+    //               weekly_timesheet.status IS NULL;`;
+    const sql = ` SELECT * FROM timesheetdb.weekly_timesheet
+        	WHERE emp_no =? AND weekly_timesheet.date BETWEEN ? AND  ? AND
+              weekly_timesheet.status IS NULL;`;
 
     pool.query(
       sql,
@@ -156,6 +159,23 @@ module.exports = {
     pool.query(
       sql,
       [data.emp_no, data.from_date, data.to_date, data.status],
+      (error, results, fields) => {
+        console.log("Sql:-", sql);
+        console.log("service error:-", error);
+        console.log("results:-", results);
+        if (error) {
+          return callback(error);
+        }
+        return callback(null, results);
+      }
+    );
+  },
+  updateStatusOnly: (data, callback) => {
+    const sql = `update weekly_timesheet set weekly_timesheet.status=?, weekly_timesheet.updated_at=NOW()  where emp_no=? AND
+                        weekly_timesheet.date BETWEEN ? AND ?`;
+    pool.query(
+      sql,
+      [data.status, data.emp_no, data.from_date, data.to_date],
       (error, results, fields) => {
         console.log("Sql:-", sql);
         console.log("service error:-", error);

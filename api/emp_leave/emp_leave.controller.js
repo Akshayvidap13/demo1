@@ -4,6 +4,7 @@ const {
   getEmpLeaveByNo,
   updateEmpLeave,
   getEmpLeavesGroupBy,
+  getEmpLeavesByDate,
 } = require("./emp_leave.service");
 
 module.exports = {
@@ -26,7 +27,6 @@ module.exports = {
   },
   getEmpLeaves: (req, res) => {
     getEmpLeaves((error, results) => {
-      
       if (error)
         return res.status(500).json({
           success: 0,
@@ -59,6 +59,23 @@ module.exports = {
     const status = req.params.status;
     console.log("Controller emp_no:-", emp_no, status);
     getEmpLeavesGroupBy(emp_no, status, (error, results) => {
+      if (error || results === undefined) {
+        return res.status(500).json({
+          success: 0,
+          message: "No record found",
+        });
+      }
+      return res.status(200).json({
+        success: 1,
+        data: results,
+      });
+    });
+  },
+  getEmpLeavesByDate: (req, res) => {
+    console.log("In controller:-");
+    const data = req.params;
+    console.log("Controller data:-", data);
+    getEmpLeavesByDate(data, (error, results) => {
       if (error || results === undefined) {
         return res.status(500).json({
           success: 0,
